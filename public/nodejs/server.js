@@ -29,6 +29,8 @@ app.listen(8000);
 
 var refreshLoop = function () {
 
+    console.log("SensorLastDate: " + sensorLastDate);
+
     if (sensorId != undefined && sensorLastDate != undefined) {
         var query = connection.query("SELECT * FROM measurements WHERE sensor_id = '" + sensorId + "' AND created_at > '" + sensorLastDate +"'"),
             measurements = [];
@@ -36,11 +38,14 @@ var refreshLoop = function () {
         console.log('Database query');
 
         query.on('error', function(err) {
-            console.log(err);
-            update(err);
-        })
+                console.log(err);
+                update(err);
+            })
             .on('result', function(measurement) {
                 measurements.push(measurement);
+                console.log("Meassurement" + measurement.created_at);
+                sensorLastDate = new Date(measurement.created_at).toMysqlFormat();
+                console.log("SensorLastDate" + sensorLastDate);
             })
             .on('end', function() {
                 if (connectionsArray.length) {
@@ -84,4 +89,15 @@ var update = function (data) {
     connectionsArray.forEach(function(tmp) {
        tmp.volatile.emit('notification', data);
     });
+};
+
+/* Utils */
+function twoDigits(d) {
+    if(0 <= d && d < 10) return "0" + d.toString();
+    if(-10 < d && d < 0) return "-0" + (-1*d).toString();
+    return d.toString();
+}
+
+Date.prototype.toMysqlFormat = function() {
+    return this.getFullYear() + "-" + twoDigits(1 + this.getMonth()) + "-" + twoDigits(this.getDate()) + " " + twoDigits(this.getHours()) + ":" + twoDigits(this.getMinutes()) + ":" + twoDigits(this.getSeconds());
 };

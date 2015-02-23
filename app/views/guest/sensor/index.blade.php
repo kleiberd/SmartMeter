@@ -194,15 +194,17 @@
             });
 
             var updateChart = function(data) {
-                console.log("Data created_at: " + data[i].created_at);
                 for (var i = 0; i < data.length; i++) {
-                    var last_date_new = data[i].created_at;
+                    /*var last_date_new = data[i].created_at;
                     var t = data[i].created_at.split(/[- :]/);
-                    var d = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
+                    var d = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);*/
+                    var d = new Date(data[i].created_at);
+                    console.log(d);
                     values.push({
                         x: d,
                         y: data[i].value
                     });
+                    last_date_new = d;
                 }
                 chart.render();
                 $("#chartContainer").attr("data-lastdate", last_date_new);
@@ -218,17 +220,14 @@
                         var t = data[i].created_at.split(/[- :]/);
                         //var d = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
                         var d = new Date(data[i].created_at);
-                        console.log("d: " + d);
-                        console.log("d gettime: " + d.getTime());
                         values.push({
                             x: d.getTime(),
                             y: data[i].value
                         });
                     }
-                    console.log(values);
                     chart.render();
                     $("#chartContainer").attr("data-lastdate", last_date);
-                    //createWS();
+                    createWS();
                 }
             });
 
