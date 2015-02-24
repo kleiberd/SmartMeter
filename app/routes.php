@@ -20,6 +20,8 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('admin/sensor/get/{id}',     'SensorController@sensorGet');
     Route::post('admin/sensor/get/{id}',    'SensorController@sensorPost');
 
+    Route::get('admin/databases',           'DatabaseController@databaseGet');
+
 });
 
 
