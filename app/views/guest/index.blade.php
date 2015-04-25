@@ -65,7 +65,7 @@
             })
 
             $.get("api/sensors", function(data, status){
-                for(i = 0; i < data.length; i++) {
+                for(var i = 0; i < data.length; i++) {
                     var myLatlng = new google.maps.LatLng(data[i].latitude, data[i].longitude);
 
                     var content = '' +
@@ -87,6 +87,7 @@
                     });
 
                     addInfoWindow(marker, content);
+                    bounds.extend(marker.position);
 
                     marker.setMap(map);
                 }
@@ -94,6 +95,7 @@
         });
 
         var map;
+        var bounds = new google.maps.LatLngBounds();
 
         function addInfoWindow(marker, message) {
             var infoWindow = new google.maps.InfoWindow({
@@ -107,7 +109,6 @@
 
         function initialize() {
             var mapOptions = {
-                center: { lat: 47.087771, lng: 17.908241},
                 zoom: 15,
                 panControl: false,
                 mapTypeControl: false,
@@ -115,6 +116,7 @@
                 streetViewControl: false
             };
             map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+            map.fitBounds(bounds);
         }
         google.maps.event.addDomListener(window, 'load', initialize);
     </script>

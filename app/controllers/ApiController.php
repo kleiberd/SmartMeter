@@ -1,6 +1,7 @@
 <?php
 
-class ApiController extends BaseController {
+class ApiController extends BaseController
+{
 
     public function sensorsGet()
     {
@@ -9,11 +10,18 @@ class ApiController extends BaseController {
         return Response::Json($sensors);
     }
 
+    public function sensorGetById($id)
+    {
+        $sensor = Sensor::find($id);
+
+        return Response::Json($sensor);
+    }
+
     public function uploadPost()
     {
         $data = Input::get('datas');
         $pieces = explode(";", $data);
-        foreach($pieces as $piece) {
+        foreach ($pieces as $piece) {
             $line = explode(":", $piece);
             $measurement = new Measurement();
             $measurement->value = $line[1];

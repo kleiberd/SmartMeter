@@ -31,6 +31,7 @@ Route::group(array('before' => 'guest'), function() {
     Route::post('login',                    'AdminController@loginPost');
 
     Route::get('api/sensors',               'ApiController@sensorsGet');
+    Route::get('api/sensors/{id}',          'ApiController@sensorGetById');
     Route::get('api/sensors/daily/{id}',    'ApiController@sensorDailyGet');
     Route::post('api/upload',               'ApiController@uploadPost');
 

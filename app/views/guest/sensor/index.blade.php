@@ -121,8 +121,8 @@
 @section('scripts')
     {{ HTML::script('assets/frameworks/metismenu/js/metisMenu.min.js') }}
     {{ HTML::script('assets/js/admin.js') }}
-    {{ HTML::script('assets/frameworks/canvasjs/jquery.canvasjs.min.js') }}
-    {{ HTML::script('https://cdn.socket.io/socket.io-1.3.4.js') }}
+    {{ HTML::script('assets/frameworks/canvasjs/canvasjs.min.js') }}
+    {{ HTML::script('assets/frameworks/socket.io/socket.io-1.3.4.js') }}
     <script type="text/javascript">
         $('#side-menu').metisMenu();
 
@@ -195,9 +195,6 @@
 
             var updateChart = function(data) {
                 for (var i = 0; i < data.length; i++) {
-                    /*var last_date_new = data[i].created_at;
-                    var t = data[i].created_at.split(/[- :]/);
-                    var d = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);*/
                     var d = new Date(data[i].created_at);
                     console.log(d);
                     values.push({
@@ -212,17 +209,15 @@
 
             $.get('{{ url('/api/sensors/daily/' . $sensor->device_id) }}', function( data ) {
                 var last_date;
-                if (data.length == 0) {
-                    //$("#nincs-adat").show();
-                } else {
+                if (data.length != 0) {
                     for (var i = 0; i < data.length; i++) {
                         last_date = data[i].created_at;
                         var t = data[i].created_at.split(/[- :]/);
-                        //var d = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
-                        var d = new Date(data[i].created_at);
+                        var d = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
+                        //var d = new Date(data[i].created_at);
                         values.push({
                             x: d.getTime(),
-                            y: data[i].value
+                            y: parseFloat(data[i].value)
                         });
                     }
                     chart.render();
@@ -234,14 +229,13 @@
             function createWS() {
 
                 var datas = $("#chartContainer").data();
-                var socket = io.connect('http://homestead.app:8000');
+                var socket = io.connect('http://davidkleiber.com:8000');
 
                 socket.on('connect', function() {
                     socket.emit("data", {date: datas.lastdate, id: datas.id});
                 });
 
                 socket.on('notification', function(data) {
-                    console.log(data.measurements);
                     if (data.measurements.length != 0) {
                         updateChart(data.measurements);
                     }

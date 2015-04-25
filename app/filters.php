@@ -13,9 +13,9 @@
 
 App::before(function($request)
 {
-	//
+    header("Access-Control-Allow-Origin: *");
+    header('Access-Control-Allow-Credentials: true');
 });
-
 
 App::after(function($request, $response)
 {
